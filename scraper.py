@@ -32,8 +32,9 @@ def get_page(url, number):
     addr = url + '&page=' + str(number)
     return get_html(addr)
 
+isNext = True
 
-while True:
+while isNext:
     global count_per_page
 
     html = get_page(address, count_per_page)
@@ -43,9 +44,6 @@ while True:
     # check next page command state
     isNext = soup.find('span', attrs={'class': "b-pager__next-text",
                                       'data-qa': "pager-next-disabled"}) is not None
-
-    if isNext:
-        break
 
     # the extraction of useful data
     for vacancy in vacancies:
