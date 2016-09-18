@@ -2,10 +2,26 @@
 
 from bs4 import BeautifulSoup
 import requests
+import csv
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 # REPLACE IT
-address = 'https://kazan.hh.ru/search/vacancy?text=&area=88&salary=&currency_code=RUR&experience=between1And3' \
-          '&order_by=relevance&search_period=&items_on_page=20&no_magic=true'
+address = 'https://kazan.hh.ru/search/vacancy?text=' \
+          '&specialization=1.221' \
+          '&area=88' \
+          '&salary=30000' \
+          '&currency_code=RUR' \
+          '&only_with_salary=true' \
+          '&experience=doesNotMatter' \
+          '&employment=full' \
+          '&order_by=relevance' \
+          '&search_period=' \
+          '&items_on_page=20' \
+          '&no_magic=true'
+# REPLACE IT
+file_name = "D:\output.csv"
 
 count_per_page = 0
 
@@ -32,10 +48,26 @@ def get_page(url, number):
     addr = url + '&page=' + str(number)
     return get_html(addr)
 
+
+def export_csv(filename, head, list_rows):
+    """
+    Export in csv file
+    :param filename:
+    :param head:
+    :param list_rows:
+    """
+    with open(filename, "wb") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(head)
+            writer.writerows(list_rows)
+
+
 isNext = True
 
+list_vacancies = []
+header = ["Title", "Link", "Description", "Requirement", "Company", "Date"]
+
 while isNext:
-    global count_per_page
 
     html = get_page(address, count_per_page)
     soup = BeautifulSoup(html, "html.parser")
@@ -45,17 +77,26 @@ while isNext:
     isNext = soup.find('span', attrs={'class': "b-pager__next-text",
                                       'data-qa': "pager-next-disabled"}) is not None
 
+    row = []
+
     # the extraction of useful data
     for vacancy in vacancies:
         # Vacancy title
-        print vacancy.find('a', attrs={'data-qa': "vacancy-serp__vacancy-title"}).text
+        row.append(vacancy.find('a', attrs={'data-qa': "vacancy-serp__vacancy-title"}).text)
         # Vacancy link
-        print vacancy.find('a', attrs={'data-qa': "vacancy-serp__vacancy-title"}).get('href')
+        row.append(vacancy.find('a', attrs={'data-qa': "vacancy-serp__vacancy-title"}).get('href'))
         # Vacancy short description
-        print vacancy.find('div', attrs={'data-qa': "vacancy-serp__vacancy_snippet_responsibility"}).text
+        row.append(vacancy.find('div', attrs={'data-qa': "vacancy-serp__vacancy_snippet_responsibility"}).text)
         # Vacancy requirement
-        print vacancy.find('div', attrs={'data-qa': "vacancy-serp__vacancy_snippet_requirement"}).text
+        row.append(vacancy.find('div', attrs={'data-qa': "vacancy-serp__vacancy_snippet_requirement"}).text)
         # Company name
-        print vacancy.find('a', attrs={'data-qa': "vacancy-serp__vacancy-employer"}).text
-        print '************************************************'
+        row.append(vacancy.find('a', attrs={'data-qa': "vacancy-serp__vacancy-employer"}).text)
+        # Date
+        row.append(vacancy.find('span', attrs={'data-qa': "vacancy-serp__vacancy-date"}).text.replace("&nbsp;", ""))
+
+    list_vacancies.append(row)
     count_per_page += 1
+
+
+export_csv(file_name, header, list_vacancies)
+
