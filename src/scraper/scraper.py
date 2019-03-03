@@ -1,3 +1,4 @@
+import urllib
 import requests
 from bs4 import BeautifulSoup
 
@@ -32,7 +33,7 @@ class HeadHunterScraper(object):
         return self.__get_html(url + '&page=' + str(number))
 
     def __url_resolver(self, city, **params):
-        query = '&'.join(['{0}={1}'.format(k, v) for k, v in params.iteritems()])
+        query = urllib.urlencode(params)
         return self.__base \
             .format(city, query)
 
