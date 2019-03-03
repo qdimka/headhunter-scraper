@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import requests
 import csv
 import sys
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -24,43 +25,6 @@ address = 'https://kazan.hh.ru/search/vacancy?text=' \
 file_name = "D:\output.csv"
 
 count_per_page = 0
-
-
-def get_html(url):
-    """
-    Get HTML string from url
-    :param url:
-    :return HTML string:
-    """
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 '
-                             '(KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'}
-    req = requests.get(url, headers)
-    return req.content
-
-
-def get_page(url, number):
-    """
-    Get page HTML string by page number
-    :param url:
-    :param number:
-    :return HTML string:
-    """
-    addr = url + '&page=' + str(number)
-    return get_html(addr)
-
-
-def export_csv(filename, head, list_rows):
-    """
-    Export in csv file
-    :param filename:
-    :param head:
-    :param list_rows:
-    """
-    with open(filename, "wb") as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow(head)
-            writer.writerows(list_rows)
-
 
 isNext = True
 
