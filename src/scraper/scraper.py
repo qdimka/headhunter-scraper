@@ -2,24 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def validate(fn):
-    def wrapper(self, params):
-        if not params.has_key('text'):
-            raise Exception('Missing text property')
-        return fn(self, params)
-
-    return wrapper
-
-
-def merge_params(fn):
-    def wrapper(self, params):
-        merged_params = dict(self.__default_params)
-        merged_params.update(params)
-        return fn(self, merged_params)
-
-    return wrapper
-
-
 class HeadHunterScraper(object):
     __default_headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
                                        'Chrome/52.0.2743.116 Safari/537.36'}
@@ -66,6 +48,22 @@ class HeadHunterScraper(object):
         yield vacancy.find('a', attrs={'data-qa': "vacancy-serp__vacancy-employer"}).text
         # Date
         yield vacancy.find('span', attrs={'data-qa': "vacancy-serp__vacancy-date"}).text.replace("&nbsp;", "")
+
+    def validate(fn):
+        def wrapper(self, city, **params):
+            if not params.has_key('text'):
+                raise Exception('Missing text property')
+            return fn(self, city, **params)
+
+        return wrapper
+
+    def merge_params(fn):
+        def wrapper(self, city, **params):
+            merged_params = dict(self.__default_params)
+            merged_params.update(params)
+            return fn(self, city, **merged_params)
+
+        return wrapper
 
     @validate
     @merge_params
