@@ -84,7 +84,7 @@ class HeadHunterScraper(object):
 
             # the extraction of useful data
             for vacancy in raw_vacancies:
-                vacancies.append(self.__fill_vacancy_properties(vacancy))
+                vacancies.append(list(self.__fill_vacancy_properties(vacancy)))
             page += 1
         return vacancies
 

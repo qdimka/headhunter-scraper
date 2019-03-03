@@ -1,6 +1,6 @@
 import os
 from unittest import TestCase
-from src.exporter.csvexporter import CsvExporter
+from exporter.csvexporter import CsvExporter
 
 
 class TestCsvExporter(TestCase):
