@@ -7,4 +7,4 @@ class TestHeadHunterScraper(TestCase):
     def test_parse(self):
         vacancies = HeadHunterScraper()\
             .parse('kazan', text='it', search_field='name')
-        self.assertTrue(vacancies.count() != 0)
+        self.assertTrue(len(vacancies) != 0)

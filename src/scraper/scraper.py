@@ -3,8 +3,10 @@ from bs4 import BeautifulSoup
 
 
 class HeadHunterScraper(object):
-    __default_headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                                       'Chrome/52.0.2743.116 Safari/537.36'}
+    __default_headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/72.0.3626.119 Safari/537.36'
+    }
     __base = 'https://{0}.hh.ru/search/vacancy?{1}'
 
     __default_params = {
@@ -23,9 +25,10 @@ class HeadHunterScraper(object):
     __delimeter = ';'
 
     def __get_html(self, url):
-        return requests \
-            .get(url, self.__default_headers) \
-            .content
+        req = requests \
+            .get(url, headers=self.__default_headers)
+
+        return req.content
 
     def __get_page(self, url, number):
         return self.__get_html(url + '&page=' + str(number))
@@ -75,7 +78,7 @@ class HeadHunterScraper(object):
         while is_next:
             html = self.__get_page(url, page)
             soup = BeautifulSoup(html, "html.parser")
-            raw_vacancies = soup.find_all('div', attrs={'class': "search-result-description"})
+            raw_vacancies = soup.find_all('div', attrs={'class': "vacancy-serp"})
 
             # check next page exists
             is_next = soup.find('span', attrs={'class': "b-pager__next-text",
