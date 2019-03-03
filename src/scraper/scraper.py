@@ -22,8 +22,6 @@ class HeadHunterScraper(object):
         'from': 'suggest_post'
     }
 
-    __delimeter = ';'
-
     def __get_html(self, url):
         req = requests \
             .get(url, headers=self.__default_headers)
@@ -78,7 +76,7 @@ class HeadHunterScraper(object):
         while is_next:
             html = self.__get_page(url, page)
             soup = BeautifulSoup(html, "html.parser")
-            raw_vacancies = soup.find_all('div', attrs={'class': "vacancy-serp"})
+            raw_vacancies = soup.find_all('div', attrs={'class': "vacancy-serp-item"})
 
             # check next page exists
             is_next = soup.find('span', attrs={'class': "b-pager__next-text",
@@ -86,7 +84,7 @@ class HeadHunterScraper(object):
 
             # the extraction of useful data
             for vacancy in raw_vacancies:
-                vacancies.append(self.__delimeter.join(self.__fill_vacancy_properties(vacancy)))
+                vacancies.append(self.__fill_vacancy_properties(vacancy))
             page += 1
         return vacancies
 
